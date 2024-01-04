@@ -4,8 +4,9 @@
 #include <stdio.h>   // For FILE
 #include <string.h>  // for strerror
 #include <errno.h>   // the errno in opening gaugefield
+#include "gauge.h"   // 
 
-
+/*
 # define DIM 7 // Rank of the gauge field array Nt x Ns^3 x Nd x Nc^2
 # define NC 3  // NC = 3 only
 # define ND 4  // ND = 4 only
@@ -15,6 +16,8 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double 
 void readGauge_C(int NS, int NT, const char* filename, double complex* U);
 int idx(int pos[], int shape[], int Nd);
 
+void construct_3x3(double complex M[3][3], double complex U[], int idx);
+*/
 
 void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double complex right[NC][NC]){
   // Multiply two matrices left and right, and return the product in MM.
@@ -26,7 +29,7 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double 
   // MM    : output 3x3 double matrix M = left * right
   // left  : output 3x3 double matrix
   // right : output 3x3 double matrix
-
+  /*
   // !# first index
   MM[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] + left[0][2] * right[2][0];
   MM[1][0] = left[1][0] * right[0][0] + left[1][1] * right[1][0] + left[1][2] * right[2][0];
@@ -39,6 +42,27 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double 
   MM[0][2] = left[0][0] * right[0][2] + left[0][1] * right[1][2] + left[0][2] * right[2][2];
   MM[1][2] = left[1][0] * right[0][2] + left[1][1] * right[1][2] + left[1][2] * right[2][2];
   MM[2][2] = left[2][0] * right[0][2] + left[2][1] * right[1][2] + left[2][2] * right[2][2];
+  */
+  // construct work matrix to prevent overloading if A or B equals M
+    
+  double complex work[NC][NC];
+    
+  for(int i=0; i<NC; i++){
+    for(int j=0; j<NC; j++){
+      work[i][j] = 0;
+      for(int k=0; k<NC; k++){
+	work[i][j] += left[i][k]*right[k][j];
+      }
+    }
+  }
+  
+  // Populate M with result
+  for(int i=0; i<NC; i++){
+    for(int j=0; j<NC; j++){
+      MM[i][j] = 0;
+      MM[i][j] = work[i][j];
+    }
+  }
 }
 
 void readGauge_C(int NS, int NT, const char* filename, double complex* U) {
@@ -81,7 +105,46 @@ int idx(int pos[], int shape[], int Nd){
     return idx;
 };
 
+void construct_3x3(double complex M[3][3], double complex U[], int idx){
+    // Constructs a 3x3 matrix M from address idx in memory U[]
+    //
+    // The SU(3) matrices are stored as a stream of 9 complex doubles
+    // starting at address idx.
+    
+    for(int c1=0; c1<NC; c1++){
+        for(int c2=0; c2<NC; c2++){
+            M[c1][c2] = U[idx];
+            
+            idx += 1; // Get next SU(3) index in memory
+        }
+    }
+};
 
+void ConjTranspose(double complex M[NC][NC]){
+    // Calculates the conjugate transpose of M.
+    
+    int N = 3;
+    
+    // Create working matrix to avoid overloading M
+    
+    double complex work[N][N];
+    
+    // Calculate the conjugate transpose and store in work
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+            work[j][i] = conj(M[i][j]);
+        }
+    }
+    
+    // Return work as M
+    for(int i=0; i<N; i++){
+        for(int j=0; j<N; j++){
+                M[i][j] = work[i][j];
+        }
+    }
+};
+
+/*
 int main(){
   // does stuff i guess
   // will be removed later
@@ -94,3 +157,4 @@ int main(){
   double complex *U = (double complex*) malloc(nmemb * size);
   readGauge_C(NS, NT, "../conf/Gen2_8x24_gfAr0.C", U);
 }
+*/
