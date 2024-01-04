@@ -9,7 +9,7 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
 
     int U_shape[DIM] = {Nt, Ns, Ns, Ns, ND, NC, NC}; // Shape of the lattice
     
-    double complex work[3][3]; // Plaquette matrix
+    //double complex plaq[3][3]; // Plaquette matrix
     
     double complex U_mu[3][3];    // Working matrices for calculations
     double complex U_nu[3][3];
@@ -31,13 +31,10 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
     // Get position of U_nu(x+mu) on the lattice
     int U_nu_pos[DIM] = {next_pos[0], next_pos[1], next_pos[2], next_pos[3], nu, 0, 0};
     int U_nu_idx = idx(U_nu_pos, U_shape, DIM); // Calculate address in memory of U_nu
-    printf("%s\n", "above con 3x3");
-    // THIS ONE IS WHERE THE SEGFAULT IS
     // Populate U_nu with value of U_nu(x+mu)
     construct_3x3(U_nu, U, U_nu_idx);
-    printf("%s\n", "below con 3x3");
-    // Calculate U_mu (plaq) * U_nu(x+mu) (work)
-    MultiplyMat(work, U_mu, U_nu);
+    // Calculate U_mu (plaq) * U_nu(x+mu) (plaq)
+    MultiplyMat(plaq, U_mu, U_nu);
     
     // Get neighbour in the nu-direction
     memcpy(next_pos, pos, sizeof(int)*4);
@@ -65,7 +62,7 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
     MultiplyMat(U_mu, U_mu_dag, U_nu_dag);
     
     // Calculate full plaquette;
-    MultiplyMat(work, work, U_mu);
+    MultiplyMat(plaq, plaq, U_mu);
 
       double trace = 0;
     
@@ -110,6 +107,6 @@ int main(){
   for(int i=0; i<NC; i++){
     trace += plaq[i][i];
   }
-  printf("%f", trace);
+  printf("%f", creal(trace));
   
 }
