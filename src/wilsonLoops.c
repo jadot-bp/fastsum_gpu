@@ -1,6 +1,7 @@
 #include <complex.h>
 #include <stdio.h>
 #include "gauge.h"
+#include <time.h>
 
 
 void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, double complex plaq[NC][NC]){
@@ -69,7 +70,7 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
       for(int i=0; i<NC; i++){
 	trace += U_mu[i][i];
       }
-      printf("%f\n", creal(trace));
+      //printf("%f\n", creal(trace));
 
     
     // Return the real part of the trace
@@ -108,5 +109,60 @@ int main(){
     trace += plaq[i][i];
   }
   printf("%f", creal(trace));
+
+
+  int S_nP = 0; // The number of spatial plaquettes
+  int T_nP = 0; // The number of temporal plaquettes
+  
+  double S_sumReTrP = 0; // Sum of real trace of spatial plaquettes
+  double T_sumReTrP = 0; // Sum of real trace of temporal plaquettes
+  
+  clock_t start = clock();
+  
+  // Loop over all sites
+  for(int t=0; t<NT; t++){
+    for(int i=0; i<NS; i++){
+      for(int j=0; j<NS; j++){
+	for(int k=0; k<NS; k++){
+	  
+	  int pos[4] = {t, i, j, k};
+          
+	  // Loop over temporal Lorentz indices
+	  int mu = 0;
+          
+	  for(int nu=1; nu<ND; nu++){
+	    one_x_one(U, pos, mu, nu, NT, NS, plaq);
+	    trace = 0;
+	    for(int i=0; i<NC; i++){
+	      trace += plaq[i][i];
+	    }
+	    T_sumReTrP += trace; // plaquette(U, pos, mu, nu, Nt, Ns);
+	    T_nP += 1;
+	  }
+          
+	  // Loop over spatial Lorentz indices
+	  for(int mu=1; mu<ND; mu++){
+	    for(int nu=mu+1; nu<ND; nu++){
+	      one_x_one(U, pos, mu, nu, NT, NS, plaq);
+	      trace = 0;
+	      for(int i=0; i<NC; i++){
+		trace += plaq[i][i];
+	      }
+	      S_sumReTrP += trace; //plaquette(U, pos, mu, nu, Nt, Ns);
+	      S_nP += 1;
+	    }
+	  }
+	}
+      }
+        }
+  }
+
+    clock_t end = clock();
+
+    printf("Type:\t\tsumReTrP:\tnP:\tAvg:\n");
+    printf("whole\t\t%lf\t%d\t%lf\n", S_sumReTrP+T_sumReTrP,S_nP+T_nP,(S_sumReTrP+T_sumReTrP)/(S_nP+T_nP));
+    printf("spatial\t\t%lf\t%d\t%lf\n", S_sumReTrP,S_nP,S_sumReTrP/S_nP);
+    printf("temporal\t%lf\t%d\t%lf\n", T_sumReTrP,T_nP,T_sumReTrP/T_nP);
+    printf("Total execution time: %fs\n",(float)(end-start)/CLOCKS_PER_SEC);
   
 }
