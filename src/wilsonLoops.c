@@ -24,7 +24,7 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
     // up to here is fine
     // Get neighbour in the mu-direction
     int next_pos[ND];
-    memcpy(next_pos, pos, sizeof(pos));
+    memcpy(next_pos, pos, sizeof(int)*4);  // Explicitly copy pos
     next_pos[mu] += 1;
     if(mu == 0){ next_pos[mu] %= Nt; }else{ next_pos[mu] %= Ns; } // Enforce periodicity
     
@@ -40,7 +40,7 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns, do
     MultiplyMat(work, U_mu, U_nu);
     
     // Get neighbour in the nu-direction
-    memcpy(next_pos, pos, sizeof(pos));
+    memcpy(next_pos, pos, sizeof(int)*4);
     next_pos[nu] += 1;
     if(nu == 0){ next_pos[nu] %= Nt; }else{ next_pos[nu] %= Ns; } // Enforce periodicity
     
