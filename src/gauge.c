@@ -29,24 +29,23 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double 
   // MM    : output 3x3 double matrix M = left * right
   // left  : output 3x3 double matrix
   // right : output 3x3 double matrix
-  /*
-  // !# first index
-  MM[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] + left[0][2] * right[2][0];
-  MM[1][0] = left[1][0] * right[0][0] + left[1][1] * right[1][0] + left[1][2] * right[2][0];
-  MM[2][0] = left[2][0] * right[0][0] + left[2][1] * right[1][0] + left[2][2] * right[2][0];
-  // !# second index
-  MM[0][1] = left[0][0] * right[0][1] + left[0][1] * right[1][1] + left[0][2] * right[2][1];
-  MM[1][1] = left[1][0] * right[0][1] + left[1][1] * right[1][1] + left[1][2] * right[2][1];
-  MM[2][1] = left[2][0] * right[0][1] + left[2][1] * right[1][1] + left[2][2] * right[2][1];
-  // !# third index
-  MM[0][2] = left[0][0] * right[0][2] + left[0][1] * right[1][2] + left[0][2] * right[2][2];
-  MM[1][2] = left[1][0] * right[0][2] + left[1][1] * right[1][2] + left[1][2] * right[2][2];
-  MM[2][2] = left[2][0] * right[0][2] + left[2][1] * right[1][2] + left[2][2] * right[2][2];
-  */
+
   // construct work matrix to prevent overloading if A or B equals M
-    
   double complex work[NC][NC];
-    
+  
+  // !# first index
+  work[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] + left[0][2] * right[2][0];
+  work[1][0] = left[1][0] * right[0][0] + left[1][1] * right[1][0] + left[1][2] * right[2][0];
+  work[2][0] = left[2][0] * right[0][0] + left[2][1] * right[1][0] + left[2][2] * right[2][0];
+  // !# second index
+  work[0][1] = left[0][0] * right[0][1] + left[0][1] * right[1][1] + left[0][2] * right[2][1];
+  work[1][1] = left[1][0] * right[0][1] + left[1][1] * right[1][1] + left[1][2] * right[2][1];
+  work[2][1] = left[2][0] * right[0][1] + left[2][1] * right[1][1] + left[2][2] * right[2][1];
+  // !# third index
+  work[0][2] = left[0][0] * right[0][2] + left[0][1] * right[1][2] + left[0][2] * right[2][2];
+  work[1][2] = left[1][0] * right[0][2] + left[1][1] * right[1][2] + left[1][2] * right[2][2];
+  work[2][2] = left[2][0] * right[0][2] + left[2][1] * right[1][2] + left[2][2] * right[2][2];
+  /*
   for(int i=0; i<NC; i++){
     for(int j=0; j<NC; j++){
       work[i][j] = 0;
@@ -55,7 +54,7 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC], double 
       }
     }
   }
-  
+  */
   // Populate M with result
   for(int i=0; i<NC; i++){
     for(int j=0; j<NC; j++){
