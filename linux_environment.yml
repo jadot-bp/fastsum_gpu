@@ -17,12 +17,16 @@ dependencies:
 #  - opt_einsum=3.3.0                 # for doing einsum with gvar objects
 #  - cython=0.29.35                   # This and gvar have specific versions for compat. reasons.
 #                                     # This may be fixed in newer versions of gvar
-#  - pygments=2.15.1		     # For the minted package to display code in tex 
+#  - pygments=2.15.1		     # For the minted package to display code in tex
   - conda-forge::pre-commit=3.4.0    # For forcing formatting ,etc
                                      # comment these if you want to use your own gxx and gfortran
   - conda-forge::gxx                 # for cppyy on weird machines without g++
   - conda-forge::gfortran            # gfortran for weird machines without it
 #  - conda-forge::findiff=0.10.0      # finite difference derivatives in any number of dimensions.
+  - conda-forge::clang-format        # for clang-format
+  - conda-forge::clang-tools         # for clang-tidy
+  - conda-forge::uncrustify          # uncrustify
+  - conda-forge::include-what-you-use # similarly
   - pip:
 #     - lsqfit==13.0.1                # Fits gvar variables
 #     - gvar==11.11.13                # Specific version for compat. with cython
