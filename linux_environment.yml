@@ -24,9 +24,9 @@ dependencies:
   - conda-forge::gfortran            # gfortran for weird machines without it
 #  - conda-forge::findiff=0.10.0      # finite difference derivatives in any number of dimensions.
   - conda-forge::clang-format        # for clang-format
-  - conda-forge::clang-tools         # for clang-tidy
+#  - conda-forge::clang-tools         # for clang-tidy
 #  - conda-forge::uncrustify          # uncrustify
-  - conda-forge::include-what-you-use # similarly
+#  - conda-forge::include-what-you-use # similarly
   - pip:
 #     - lsqfit==13.0.1                # Fits gvar variables
 #     - gvar==11.11.13                # Specific version for compat. with cython
