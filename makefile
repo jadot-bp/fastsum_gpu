@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -std=c99 -g
+CFLAGS=-Wall -Wextra -pedantic -std=c99 -g -lm
 SRCDIR=src
 BINDIR=bin
 SOURCES=$(wildcard $(SRCDIR)/*.c)

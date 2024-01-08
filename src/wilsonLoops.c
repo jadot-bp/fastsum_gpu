@@ -1,4 +1,6 @@
 #include <complex.h>
+#include <math.h>    // pow
+#include <stdlib.h>  // ???
 
 #include "gauge.h"
 
@@ -57,6 +59,201 @@ void one_x_one_Paths(int* fPath, int* bPath) {
   }
 }
 
+int calculatePathSize(double maxR, double maxT) {
+  /*
+    Calculates the number of steps or links
+    in the forward (backward) path
+    hence half the total number of steps
+    Only to do for one mu, as the are all the same
+  */
+  int mu;
+  double t0, t1;
+  int stepCount = 0;
+
+  for (mu = 1; mu < 2; mu++) {
+    double x[3] = {0.0, 0.0, 0.0};
+    double y[3] = {0.0, 0.0, 0.0};
+    stepCount = 0;
+    while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) +
+                pow(x[2] - y[2], 2)) < maxR) {
+      stepCount++;
+      y[mu - 1] = y[mu - 1] + 1.0;
+    }
+
+    t0 = 0.0;
+    t1 = 0.0;
+    while (fabs(t1 - t0) < maxT) {
+      stepCount++;
+      t1 = t1 + 1.0;
+    }
+  }
+  return stepCount;
+}
+
+void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
+  /*
+    Constructs the paths for loops of size maxR * maxT
+    // Note that FF corresponds to backwards loops that get conjugated
+    // and BF corresponds to forward loops that don't
+    // even though that's not what the forward/backward below say
+   */
+  int mu;
+  int* FF;
+  int stepCount;
+  int BStepCount;
+  double t0, t1;
+  int* BF;
+  double x[3] = {0.0, 0.0, 0.0};
+  double y[3];
+  FF = (int*)malloc(sizeof(int) * pathSize);
+  BF = (int*)malloc(sizeof(int) * pathSize);
+  // Loop over each direction
+  // mu = 1
+  mu = 1;
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  stepCount = 0;
+  // Here we set the mu into the list for the forward path
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    FF[stepCount] = mu;
+    stepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // Similarly for the T steps for this forward and backwards path
+  BStepCount = 0;
+  t0 = 0.0;
+  t1 = 0.0;
+  while (fabs(t1 - t0) < maxT) {
+    FF[stepCount] = 0;
+    BF[BStepCount] = 0;
+    stepCount++;
+    BStepCount++;
+    t1 = t1 + 1.0;
+  }
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    // Here we set the mu into the list for the backward path
+    BF[BStepCount] = mu;
+    BStepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // printf("mu = %d \n", mu);
+  // Now put them into the overall list of paths
+  for (int ii = 0; ii < pathSize; ii++) {
+    bPaths[ii + 0 * pathSize] = FF[ii];
+    // printf("ii %d ind %d FF %d \n", ii, ii + 0 * pathSize, FF[ii]);
+  }
+  for (int ii = 0; ii < pathSize; ii++) {
+    fPaths[ii + 0 * pathSize] = BF[ii];
+    // printf("ii %d ind %d BF %d \n", ii, ii + 0 * pathSize, BF[ii]);
+  }
+
+  // mu = 2
+  mu = 2;
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  stepCount = 0;
+  // Here we set the mu into the list for the forward path
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    FF[stepCount] = mu;
+    stepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // Similarly for the T steps for this forward and backwards path
+  BStepCount = 0;
+  t0 = 0.0;
+  t1 = 0.0;
+  while (fabs(t1 - t0) < maxT) {
+    FF[stepCount] = 0;
+    BF[BStepCount] = 0;
+    stepCount++;
+    BStepCount++;
+    t1 = t1 + 1.0;
+  }
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    // Here we set the mu into the list for the backward path
+    BF[BStepCount] = mu;
+    BStepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // Now put them into the overall list of paths
+  // printf("mu = %d \n", mu);
+  for (int ii = 0; ii < pathSize; ii++) {
+    bPaths[ii + 1 * pathSize] = FF[ii];
+    // printf("ii %d ind %d FF %d \n", ii, ii + 1 * pathSize, FF[ii]);
+  }
+  for (int ii = 0; ii < pathSize; ii++) {
+    fPaths[ii + 1 * pathSize] = BF[ii];
+    // printf("ii %d ind %d BF %d \n", ii, ii + 1 * pathSize, BF[ii]);
+  }
+
+  // mu = 3
+  mu = 3;
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  stepCount = 0;
+  // Here we set the mu into the list for the forward path
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    FF[stepCount] = mu;
+    stepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // Similarly for the T steps for this forward and backwards path
+  BStepCount = 0;
+  t0 = 0.0;
+  t1 = 0.0;
+  while (fabs(t1 - t0) < maxT) {
+    FF[stepCount] = 0;
+    BF[BStepCount] = 0;
+    stepCount++;
+    BStepCount++;
+    t1 = t1 + 1.0;
+  }
+  y[0] = 0.0;
+  y[1] = 0.0;
+  y[2] = 0.0;
+  while (sqrt(pow(x[0] - y[0], 2) + pow(x[1] - y[1], 2) + pow(x[2] - y[2], 2)) <
+         maxR) {
+    // Here we set the mu into the list for the backward path
+    BF[BStepCount] = mu;
+    BStepCount++;
+    y[mu - 1] = y[mu - 1] + 1.0;
+  }
+  // Now put them into the overall list of paths
+  // printf("mu = %d \n", mu);
+  for (int ii = 0; ii < pathSize; ii++) {
+    bPaths[ii + 2 * pathSize] = FF[ii];
+    // printf("ii %d ind %d FF %d \n", ii, ii + 2 * pathSize, FF[ii]);
+  }
+  for (int ii = 0; ii < pathSize; ii++) {
+    fPaths[ii + 2 * pathSize] = BF[ii];
+    // printf("ii %d ind %d BF %d \n", ii, ii + 2 * pathSize, BF[ii]);
+  }
+
+  for (int pp = 0; pp < 3 * pathSize; pp += pathSize) {
+    // printf("Path %d: \n", pp / pathSize + 1);
+    for (int jj = 0; jj < pathSize; jj++) {
+      // printf("link %d: \n", jj + 1);
+      // printf("pp %d, jj %d, F %d, B %d \n", pp, jj, fPaths[pp + jj],
+      // bPaths[pp + jj]);
+    }
+  }
+  //  exit(1);
+}
+
 double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
                            int NPath, int pathLength, int* fPath, int* bPath,
                            double complex plaq[3][3]) {
@@ -76,7 +273,7 @@ double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
   int U_shape[DIM] = {Nt, Ns, Ns, Ns, ND, NC, NC};
   // Loop over all of the paths
   for (int pp = 0; pp < NPath * pathLength; pp += pathLength) {
-    printf("Path %d: \n", pp / pathLength + 1);
+    // printf("Path %d: \n", pp / pathLength + 1);
     // Copy position
     for (int ii = 0; ii < 4; ii++) {
       fPos[ii] = pos[ii];
@@ -85,8 +282,9 @@ double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
 
     // Get starting position
     // Start SU(3) indices at zero
-    printf("x, y, z, mu, %d %d %d %d %d\n", fPos[0], fPos[1], fPos[2], fPos[3],
-           fPath[pp + 0]);
+    // printf("FOR x, y, z, t, mu, %d %d %d %d %d\n", fPos[0], fPos[1], fPos[2],
+    // fPos[3], fPath[pp + 0]); printf("BAC x, y, z, t, mu, %d %d %d %d %d\n",
+    // bPos[0], bPos[1], bPos[2], bPos[3], bPath[pp + 0]);
     int U_f_pos[DIM] = {fPos[0],       fPos[1], fPos[2], fPos[3],
                         fPath[pp + 0], 0,       0};
     int U_b_pos[DIM] = {bPos[0],       bPos[1], bPos[2], bPos[3],
@@ -116,11 +314,12 @@ double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
     // Loop over each step in the path
     // Start at 1 as have already got the first link
     for (int jj = 1; jj < pathLength; jj++) {
-      printf("link %d: \n", jj);
+      // printf("link %d: \n", jj + 1);
       // Get the next link
       // Start SU(3) indices at zero
-      printf("x, y, z, mu, %d %d %d %d %d\n", fPos[0], fPos[1], fPos[2],
-             fPos[3], fPath[pp + jj]);
+      // printf("FOR x, y, z, t, mu, %d %d %d %d %d\n", fPos[0], fPos[1],
+      // fPos[2], fPos[3], fPath[pp + jj]); printf("BAC x, y, z, t, mu, %d %d %d
+      // %d %d\n", bPos[0], bPos[1], bPos[2], bPos[3], bPath[pp + jj]);
       int U_f_pos[DIM] = {fPos[0],        fPos[1], fPos[2], fPos[3],
                           fPath[pp + jj], 0,       0};
       int U_b_pos[DIM] = {bPos[0],        bPos[1], bPos[2], bPos[3],

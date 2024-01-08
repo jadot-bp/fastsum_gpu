@@ -26,6 +26,13 @@ int main() {
   // Set up the paths
   one_x_one_Paths(fPath, bPath);
 
+  int RTPathSize = calculatePathSize(1, 1);
+  printf("%s %d \n", "The path length in 1x1 is ", RTPathSize);
+  int* fPathRT = allocatePaths(3, RTPathSize);
+  int* bPathRT = allocatePaths(3, RTPathSize);
+  // Set up the paths
+  wRT(1, 1, fPathRT, bPathRT, RTPathSize);
+
   int S_nP = 0;  // The number of spatial plaquettes
   int T_nP = 0;  // The number of temporal plaquettes
 
@@ -33,6 +40,8 @@ int main() {
   double T_sumReTrP = 0;  // Sum of real trace of temporal plaquettes
 
   double sumReTrP = 0;  // alternative cac
+
+  double sumReTrWRT = 0;  // alternative cac
 
   clock_t start = clock();
 
@@ -50,6 +59,9 @@ int main() {
           // Alternative plaq calc
           sumReTrP +=
               tracePathWilsonLoop(U, pos, NT, NS, 6, 2, fPath, bPath, plaq);
+          printf("%s", "\n");
+          sumReTrWRT += tracePathWilsonLoop(U, pos, NT, NS, 3, RTPathSize,
+                                            fPathRT, bPathRT, plaq);
 
           // Loop over temporal Lorentz indices
           int mu = 0;
@@ -84,6 +96,7 @@ int main() {
   clock_t end = clock();
 
   printf("\n\n alt plaq calc %lf \n", sumReTrP);
+  printf("\n\n WRT calc %lf \n", sumReTrWRT);
   printf("Type:\t\tsumReTrP:\tnP:\tAvg:\n");
   printf("whole\t\t%lf\t%d\t%lf\n", S_sumReTrP + T_sumReTrP, S_nP + T_nP,
          (S_sumReTrP + T_sumReTrP) / (S_nP + T_nP));
