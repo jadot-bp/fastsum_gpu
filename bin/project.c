@@ -7,17 +7,17 @@
 
 int main() {
   // does stuff
-  int NS = 24;
-  int NT = 8;
+  int NS = 32;
+  int NT = 64;
   // Lattice volume
   int nmemb = NT * NS * NS * NS * ND * NC * NC;
   int size = sizeof(double complex);
   // Allocate memory to store the lattice
   double complex* U = (double complex*)malloc(nmemb * size);
   // printf("%s\n", "Successfully allocated U memory");
-  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
+  //  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
-  // readGauge_C(NS, NT, "../conf/Gen2l_64x32n74.C", U);
+  readGauge_C(NS, NT, "../conf/Gen2l_64x32n100.C", U);
 
   double complex plaq[3][3];  // Plaquette matrix
   // Allocate the path arrays with 6 paths of length 2
@@ -46,14 +46,14 @@ int main() {
   clock_t start = clock();
 
   // Loop over all sites
-  //  for (int t = 0; t < NT; t++) {
-  //    for (int i = 0; i < NS; i++) {
-  //      for (int j = 0; j < NS; j++) {
-  //        for (int k = 0; k < NS; k++) {
-  for (int t = 0; t < 1; t++) {
-    for (int i = 0; i < 1; i++) {
-      for (int j = 0; j < 1; j++) {
-        for (int k = 0; k < 1; k++) {
+  for (int t = 0; t < NT; t++) {
+    for (int i = 0; i < NS; i++) {
+      for (int j = 0; j < NS; j++) {
+        for (int k = 0; k < NS; k++) {
+          // for (int t = 0; t < 1; t++) {
+          //   for (int i = 0; i < 1; i++) {
+          //     for (int j = 0; j < 1; j++) {
+          //       for (int k = 0; k < 1; k++) {
           int pos[4] = {t, i, j, k};
 
           // Alternative plaq calc
@@ -96,6 +96,7 @@ int main() {
   clock_t end = clock();
 
   printf("\n\n alt plaq calc %lf \n", sumReTrP);
+  printf("%s %d \n", "The path length in 1x1 is ", RTPathSize);
   printf("\n\n WRT calc %lf \n", sumReTrWRT);
   printf("Type:\t\tsumReTrP:\tnP:\tAvg:\n");
   printf("whole\t\t%lf\t%d\t%lf\n", S_sumReTrP + T_sumReTrP, S_nP + T_nP,
