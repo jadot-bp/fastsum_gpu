@@ -1,13 +1,12 @@
 #include "gauge.h"  //
 
-#include <errno.h>  // the errno in opening gaugefield
-
+#include <cerrno>    // the errno in opening gaugefield
 #include <cmath>     // For getting size of type
 #include <complex>   // For complex numbers
 #include <cstdio>    // C stdlib
 #include <iostream>  // For FILE
 // #include <stdlib.h>   // or this ?
-#include <string.h>  // for strerror
+#include <cstring>  // for strerror
 using namespace std;
 /*
 # define DIM 7 // Rank of the gauge field array Nt x Ns^3 x Nd x Nc^2
@@ -77,7 +76,7 @@ void MultiplyMat(dc MM[NC][NC], dc left[NC][NC], dc right[NC][NC]) {
   }
 }
 
-void readGauge_C(int NS, int NT, const char* filename, double complex* U) {
+void readGauge_C(int NS, int NT, const char* filename, dc* U) {
   // Reads a gaugefield in 'C' format from dumping numpy array from lyncs in
   // python Args:
   //
@@ -87,11 +86,12 @@ void readGauge_C(int NS, int NT, const char* filename, double complex* U) {
   // U        : memory for lattice data
   FILE* fptr = fopen(filename, "r");
   if (fptr == NULL) {
-    fprintf(stderr, "Couldn't open %s: %s\n", filename, strerror(errno));
+    cerr << "Couldn't open: " << filename << "\n"
+         << std::strerror(errno) << endl;
     exit(1);
   }
   int nmemb = NT * NS * NS * NS * ND * NC * NC;  // Lattice volume
-  int size = sizeof(double complex);
+  int size = sizeof(dc);
   // Read the gaugefields into U
   fread(U, size, nmemb, fptr);
   fclose(fptr);
@@ -164,9 +164,11 @@ int main() {
   int NT = 8;
   // Lattice volume
   int nmemb = NT*NS*NS*NS*ND*NC*NC;
-  int size = sizeof(double complex);
+  int size = sizeof(dc);
   // Allocate memory to store the lattice
-  double complex *U = (double complex*) malloc(nmemb * size);
-  readGauge_C(NS, NT, "../conf/Gen2_8x24_gfAr0.C", U);
+  dc *U = new dc[nmemb*size];//(double complex*) malloc(nmemb * size);
+  // dc *U = new dc
+  readGauge_C(NS, NT, "../conf/Gen2l_64x32n100.C", U);
+  cout<<"done!"<<endl;
 }
 */

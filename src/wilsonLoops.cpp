@@ -1,16 +1,18 @@
-#include <complex.h>
-#include <math.h>  // pow
+#include <cmath>  // pow
+#include <complex>
 // #include <stdlib.h>  // ???
 #include <iostream>
 
 #include "gauge.h"
 
+using namespace std;
+
 int* allocatePaths(int N, int M) {
   // Allocate memory to hold the paths
   // Return pointer to first element
-  int* paths = (int*)malloc(N * M * sizeof(int));
+  int* paths = new int[N * M];  //(int*)malloc(N * M * sizeof(int));
   if (paths == NULL) {
-    printf("Memory not allocated.\n");
+    cout << "Memory not allocated." << endl;
     exit(0);
   }
   return paths;
@@ -106,8 +108,10 @@ void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
   int* BF;
   double x[3] = {0.0, 0.0, 0.0};
   double y[3];
-  FF = (int*)malloc(sizeof(int) * pathSize);
-  BF = (int*)malloc(sizeof(int) * pathSize);
+  // FF = (int*)malloc(sizeof(int) * pathSize);
+  FF = new int[pathSize];
+  // BF = (int*)malloc(sizeof(int) * pathSize);
+  BF = new int[pathSize];
   // Loop over each direction
   // mu = 1
   mu = 1;
@@ -255,19 +259,19 @@ void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
   //  exit(1);
 }
 
-double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
-                           int NPath, int pathLength, int* fPath, int* bPath,
-                           double complex plaq[3][3]) {
+double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
+                           int pathLength, int* fPath, int* bPath,
+                           dc plaq[3][3]) {
   // Follows the wilson loop path from a fPath and bPath
   // Starting at pos
   // Returns the sum of the trace of the 3x3 link SU(3) matrices
   // Output
   double trace = 0;
   // Working matrices for calculations
-  double complex U_fLeft[3][3];
-  double complex U_fRight[3][3];
-  double complex U_bLeft[3][3];
-  double complex U_bRight[3][3];
+  dc U_fLeft[3][3];
+  dc U_fRight[3][3];
+  dc U_bLeft[3][3];
+  dc U_bRight[3][3];
   int fPos[4];
   int bPos[4];
   // Shape of the lattice
@@ -355,15 +359,15 @@ double tracePathWilsonLoop(double complex U[], int pos[], int Nt, int Ns,
     ConjTranspose(U_bLeft);
     MultiplyMat(plaq, U_fLeft, U_bLeft);
     for (int i = 0; i < NC; i++) {
-      trace += plaq[i][i];
+      trace += real(plaq[i][i]);
     }
   }
   // return summed trace
   return trace;
 }
 
-void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns,
-               double complex plaq[3][3]) {
+void one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns,
+               dc plaq[3][3]) {
   // Calculate the value of the plaquette
   // in the mu-nu plane at position pos.
 
@@ -371,10 +375,10 @@ void one_x_one(double complex U[], int pos[], int mu, int nu, int Nt, int Ns,
 
   // double complex plaq[3][3]; // Plaquette matrix
 
-  double complex U_mu[3][3];  // Working matrices for calculations
-  double complex U_nu[3][3];
-  double complex U_mu_dag[3][3];
-  double complex U_nu_dag[3][3];
+  dc U_mu[3][3];  // Working matrices for calculations
+  dc U_nu[3][3];
+  dc U_mu_dag[3][3];
+  dc U_nu_dag[3][3];
 
   // Get position of U_mu on the lattice
   int U_mu_pos[DIM] = {pos[0], pos[1], pos[2], pos[3],

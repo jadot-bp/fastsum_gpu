@@ -1,11 +1,10 @@
 // #include <stdlib.h>  // or this ?
-#include <math.h>  // Not sure what this is for
-
+#include <cmath>    // Not sure what this is for
 #include <complex>  // For complex numbers
+#include <cstdio>
 // #include <stdio.h>   // For FILE
-#include <errno.h>   // the errno in opening gaugefield
-#include <string.h>  // for strerror
-
+#include <cerrno>   // the errno in opening gaugefield
+#include <cstring>  // for strerror
 #include <iostream>
 typedef std::complex<double> dc;
 
