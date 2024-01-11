@@ -1,15 +1,15 @@
-CC=g++
-CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm
+CC=gcc
+CFLAGS= -std=c99 -Wall -Wextra -pedantic -g -lm
 SRCDIR=src
 BINDIR=bin
-SOURCES=$(wildcard $(SRCDIR)/*.cpp)
-OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SOURCES))
+SOURCES=$(wildcard $(SRCDIR)/*.c)
+OBJECTS=$(patsubst $(SRCDIR)/%.c,$(BINDIR)/%.o,$(SOURCES))
 EXECUTABLE=$(BINDIR)/project
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(CFLAGS) $(EXECUTABLE).cpp -o $(EXECUTABLE)_cpp.x $(OBJECTS)
+	$(CC) $(CFLAGS) $(EXECUTABLE).c -o $(EXECUTABLE).x $(OBJECTS)
 
-$(BINDIR)/%.o: $(SRCDIR)/%.cpp
+$(BINDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
