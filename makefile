@@ -7,9 +7,9 @@ OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SOURCES))
 EXECUTABLE=$(BINDIR)/project
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(CFLAGS) $(EXECUTABLE).cpp -o $(EXECUTABLE).x $(OBJECTS)
+	$(CC) $(CFLAGS) $(EXECUTABLE).cpp -o $(EXECUTABLE)_cpp.x $(OBJECTS)
 
-$(BINDIR)/%.o: $(SRCDIR)/%.c
+$(BINDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
