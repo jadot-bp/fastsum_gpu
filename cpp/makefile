@@ -13,4 +13,4 @@ $(BINDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE).x
+	rm -f $(OBJECTS) $(EXECUTABLE)_cpp.x
