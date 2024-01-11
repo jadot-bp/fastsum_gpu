@@ -1,9 +1,10 @@
 #include "gauge.h"  //
 
-#include <complex.h>  // For complex numbers
-#include <errno.h>    // the errno in opening gaugefield
-#include <math.h>     // Not sure what this is for
+#include <errno.h>  // the errno in opening gaugefield
 
+#include <cmath>     // For getting size of type
+#include <complex>   // For complex numbers
+#include <cstdio>    // C stdlib
 #include <iostream>  // For FILE
 // #include <stdlib.h>   // or this ?
 #include <string.h>  // for strerror
@@ -22,8 +23,7 @@ int idx(int pos[], int shape[], int Nd);
 void construct_3x3(double complex M[3][3], double complex U[], int idx);
 */
 
-void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC],
-                 double complex right[NC][NC]) {
+void MultiplyMat(dc MM[NC][NC], dc left[NC][NC], dc right[NC][NC]) {
   // Multiply two matrices left and right, and return the product in MM.
   // Assumes matrices are 3x3 double complex.
   // Explicitly write out the maths for it
@@ -35,7 +35,7 @@ void MultiplyMat(double complex MM[NC][NC], double complex left[NC][NC],
   // right : output 3x3 double matrix
 
   // construct work matrix to prevent overloading if A or B equals M
-  double complex work[NC][NC];
+  dc work[NC][NC];
 
   // !# first index
   work[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] +
@@ -117,7 +117,7 @@ int idx(int pos[], int shape[], int Nd) {
   return idx;
 }
 
-void construct_3x3(double complex M[3][3], double complex U[], int idx) {
+void construct_3x3(dc M[3][3], dc U[], int idx) {
   // Constructs a 3x3 matrix M from address idx in memory U[]
   //
   // The SU(3) matrices are stored as a stream of 9 complex doubles
@@ -132,14 +132,14 @@ void construct_3x3(double complex M[3][3], double complex U[], int idx) {
   }
 }
 
-void ConjTranspose(double complex M[NC][NC]) {
+void ConjTranspose(dc M[NC][NC]) {
   // Calculates the conjugate transpose of M.
 
   int N = 3;
 
   // Create working matrix to avoid overloading M
 
-  double complex work[N][N];
+  dc work[N][N];
 
   // Calculate the conjugate transpose and store in work
   for (int i = 0; i < N; i++) {
