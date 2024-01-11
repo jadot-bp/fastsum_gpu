@@ -1,11 +1,9 @@
-// #include <stdlib.h>  // or this ?
 #include <complex.h>  // For complex numbers
+#include <errno.h>    // the errno in opening gaugefield
 #include <math.h>     // Not sure what this is for
-// #include <stdio.h>   // For FILE
-#include <errno.h>   // the errno in opening gaugefield
-#include <string.h>  // for strerror
-
-#include <iostream>
+#include <stdio.h>    // For FILE
+#include <stdlib.h>   // or this ?
+#include <string.h>   // for strerror
 
 #define DIM 7  // Rank of the gauge field array Nt x Ns^3 x Nd x Nc^2
 #define NC 3   // NC = 3 only
