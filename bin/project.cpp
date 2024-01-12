@@ -1,9 +1,13 @@
-#include <complex.h>
-#include <stdio.h>
-#include <time.h>
+#include <complex>
+#include <cstdio>
+// #include <stdio.h>
+#include <ctime>
+// #include <time.h>
 
 #include "../src/gauge.h"
 #include "../src/wilsonLoops.h"
+
+using namespace std;
 
 int main() {
   // does stuff
@@ -11,15 +15,15 @@ int main() {
   int NT = 64;
   // Lattice volume
   int nmemb = NT * NS * NS * NS * ND * NC * NC;
-  int size = sizeof(double complex);
+  int size = sizeof(dc);
   // Allocate memory to store the lattice
-  double complex* U = (double complex*)malloc(nmemb * size);
+  dc* U = new dc[nmemb * size];  //(dc*)malloc(nmemb * size);
   // printf("%s\n", "Successfully allocated U memory");
   //  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
   readGauge_C(NS, NT, "../conf/Gen2l_64x32n100.C", U);
 
-  double complex plaq[3][3];  // Plaquette matrix
+  dc plaq[3][3];  // Plaquette matrix
   // Allocate the path arrays with 6 paths of length 2
   int* fPath = allocatePaths(6, 2);
   int* bPath = allocatePaths(6, 2);
@@ -70,7 +74,7 @@ int main() {
             one_x_one(U, pos, mu, nu, NT, NS, plaq);
             double trace = 0;
             for (int i = 0; i < NC; i++) {
-              trace += plaq[i][i];
+              trace += real(plaq[i][i]);
             }
             T_sumReTrP += trace;  // plaquette(U, pos, mu, nu, Nt, Ns);
             T_nP += 1;
@@ -82,7 +86,7 @@ int main() {
               one_x_one(U, pos, mu, nu, NT, NS, plaq);
               double trace = 0;
               for (int i = 0; i < NC; i++) {
-                trace += plaq[i][i];
+                trace += real(plaq[i][i]);
               }
               S_sumReTrP += trace;  // plaquette(U, pos, mu, nu, Nt, Ns);
               S_nP += 1;
