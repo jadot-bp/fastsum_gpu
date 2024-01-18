@@ -31,7 +31,7 @@ double pathSum(int NS, int NT, int RTPathSize, int* fPathRT, int* bPathRT, dc U[
 
   // mySum holds all of the sum_{paths} at each  (t, x, y, z)
   std::vector<double> mySum(NT * NS * NS * NS);
-  return std::transform_reduce(std::execution::par_unseq, myRange.begin(), myRange.end(), 0, std::plus{}, [NS, NT, RTPathSize, fPathRT, bPathRT, U, mySum = mySum.data()] (auto index){
+  return std::transform_reduce(std::execution::par_unseq, myRange.begin(), myRange.end(), 0., std::plus{}, [NS, NT, RTPathSize, fPathRT, bPathRT, U, mySum = mySum.data()] (auto index){
       // a lot here
       // execution method for parallel or not, etc (seq, unseq, par, par_unseq)
       // start iter
@@ -50,6 +50,7 @@ double pathSum(int NS, int NT, int RTPathSize, int* fPathRT, int* bPathRT, dc U[
       // do work
       mySum[ii] += tracePathWilsonLoop(U, pos, NT, NS, 3, RTPathSize,
 				      fPathRT, bPathRT);
+     
       return mySum[ii];
    });
 }
