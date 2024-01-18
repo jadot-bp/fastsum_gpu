@@ -21,7 +21,7 @@ int main() {
   // printf("%s\n", "Successfully allocated U memory");
   //  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
-  readGauge_C(NS, NT, "../../conf/Gen2l_32x32n954.C", U);
+  readGauge_C(NS, NT, "/cosma5/data/do009/dc-bign2/conf/Gen2l_32x32n954.C", U);
 
   // dc plaq[3][3];  // Plaquette matrix
   // Allocate the path arrays with 6 paths of length 2
