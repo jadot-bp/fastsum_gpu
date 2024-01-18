@@ -1,5 +1,5 @@
-CC=g++
-CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm -fopenmp
+CC=nvc++
+CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm -mp=gpu
 SRCDIR=src
 BINDIR=bin
 SOURCES=$(wildcard $(SRCDIR)/*.cpp)
