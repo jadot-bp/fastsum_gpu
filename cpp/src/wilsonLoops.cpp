@@ -260,8 +260,7 @@ void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
 }
 
 double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
-                           int pathLength, int* fPath, int* bPath,
-                           dc plaq[3][3]) {
+                           int pathLength, int* fPath, int* bPath) {
   // Follows the wilson loop path from a fPath and bPath
   // Starting at pos
   // Returns the sum of the trace of the 3x3 link SU(3) matrices
@@ -272,6 +271,7 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
   dc U_fRight[3][3];
   dc U_bLeft[3][3];
   dc U_bRight[3][3];
+  dc plaq[3][3];
   int fPos[4];
   int bPos[4];
   // Shape of the lattice
@@ -366,8 +366,7 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
   return trace;
 }
 
-void one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns,
-               dc plaq[3][3]) {
+double one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns) {
   // Calculate the value of the plaquette
   // in the mu-nu plane at position pos.
 
@@ -379,6 +378,7 @@ void one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns,
   dc U_nu[3][3];
   dc U_mu_dag[3][3];
   dc U_nu_dag[3][3];
+  dc plaq[3][3];
 
   // Get position of U_mu on the lattice
   int U_mu_pos[DIM] = {pos[0], pos[1], pos[2], pos[3],
@@ -445,4 +445,10 @@ void one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns,
 
   // Calculate full plaquette;
   MultiplyMat(plaq, plaq, U_mu);
+
+  double trace = 0;
+  for (int i = 0; i < NC; i++) {
+    trace += real(plaq[i][i]);
+  }
+  return trace;
 }

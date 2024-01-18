@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm
+CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm -fopenmp
 SRCDIR=src
 BINDIR=bin
 SOURCES=$(wildcard $(SRCDIR)/*.cpp)
