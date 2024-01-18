@@ -1,4 +1,4 @@
-CC=gcc
+CC=nvcc
 CFLAGS=-Wall -Wextra -pedantic -std=c99 -g -lm
 SRCDIR=src
 BINDIR=bin
