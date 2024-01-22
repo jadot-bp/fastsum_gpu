@@ -84,7 +84,7 @@ int main() {
  for (int R=0; R<NS - 3; R++){
    printf("The path length in %dx1 is %d for %lf \n", R+1, RTPathSize[R], sumReTrWRT[R]);
  }
-  printf("Total execution time: %lfs\n", (float)(end - start) / CLOCKS_PER_SEC);
+ printf("Total execution time: %lfs\n", (float)(end - start));
  }
   return 0;
 }
