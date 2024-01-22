@@ -1,8 +1,7 @@
 #include <complex>
 #include <cstdio>
-// #include <stdio.h>
-#include <ctime>
-// #include <time.h>
+
+#include <omp.h>
 
 #include "../src/gauge.h"
 #include "../src/wilsonLoops.h"
@@ -23,8 +22,7 @@ int main() {
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
   readGauge_C(NS, NT, "../../conf/Gen2l_32x32n954.C", U);
 
-
-  clock_t start = clock();
+  double start = omp_get_wtime();
 
   int* fPathAr[NS - 3];
   int* bPathAr[NS - 3];
@@ -81,12 +79,12 @@ int main() {
  }
 #pragma omp taskwait  
  {
- clock_t end = clock();
+   double end = omp_get_wtime();
  printf("\n\n\n");
  for (int R=0; R<NS - 3; R++){
    printf("The path length in %dx1 is %d for %lf \n", R+1, RTPathSize[R], sumReTrWRT[R]);
  }
-  printf("Total execution time: %fs\n", (float)(end - start) / CLOCKS_PER_SEC);
+  printf("Total execution time: %lfs\n", (float)(end - start) / CLOCKS_PER_SEC);
  }
   return 0;
 }
