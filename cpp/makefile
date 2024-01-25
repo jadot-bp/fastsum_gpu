@@ -1,5 +1,5 @@
-CC=g++
-CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm
+CC=clang++
+CFLAGS= -fsycl -fsycl-targets=nvptx64-nvidia-cuda
 SRCDIR=src
 BINDIR=bin
 SOURCES=$(wildcard $(SRCDIR)/*.cpp)
