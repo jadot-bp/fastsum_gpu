@@ -260,8 +260,7 @@ void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
 }
 
 double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
-                           int pathLength, int* fPath, int* bPath,
-                           dc plaq[3][3]) {
+                           int pathLength, int* fPath, int* bPath) {
   // Follows the wilson loop path from a fPath and bPath
   // Starting at pos
   // Returns the sum of the trace of the 3x3 link SU(3) matrices
@@ -272,6 +271,7 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
   dc U_fRight[3][3];
   dc U_bLeft[3][3];
   dc U_bRight[3][3];
+  dc plaq[3][3];
   int fPos[4];
   int bPos[4];
   // Shape of the lattice

@@ -21,7 +21,7 @@ int main() {
   // printf("%s\n", "Successfully allocated U memory");
   //  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
-  readGauge_C(NS, NT, "../conf/Gen2l_64x32n100.C", U);
+  readGauge_C(NS, NT, "../conf/Gen2_8x24_gfAr0.C", U);
 
   dc plaq[3][3];  // Plaquette matrix
   // Allocate the path arrays with 6 paths of length 2
@@ -61,11 +61,10 @@ int main() {
           int pos[4] = {t, i, j, k};
 
           // Alternative plaq calc
-          sumReTrP +=
-              tracePathWilsonLoop(U, pos, NT, NS, 6, 2, fPath, bPath, plaq);
+          sumReTrP += tracePathWilsonLoop(U, pos, NT, NS, 6, 2, fPath, bPath);
           printf("%s", "\n");
           sumReTrWRT += tracePathWilsonLoop(U, pos, NT, NS, 3, RTPathSize,
-                                            fPathRT, bPathRT, plaq);
+                                            fPathRT, bPathRT);
 
           // Loop over temporal Lorentz indices
           int mu = 0;
