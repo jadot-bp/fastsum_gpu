@@ -9,6 +9,14 @@
 
 using namespace std;
 
+static void initGPU() {
+
+#pragma omp target
+	{
+	}
+
+}
+
 int main() {
   // does stuff
   int NS = 32;
@@ -21,7 +29,7 @@ int main() {
   // printf("%s\n", "Successfully allocated U memory");
   //  readGauge_C(NS, NT, "conf/Gen2_8x24_gfAr0.C", U);
   // readGauge_C(NS, NT, "../conf/Gen2P_k278480_128x48_Tune_053n2.C", U);
-  readGauge_C(NS, NT, "/cosma5/data/do009/dc-bign2/conf/Gen2l_32x32n954.C", U);
+  readGauge_C(NS, NT, "/cosma5/data/do009/dc-bign2/conf/Gen2l_64x32n325.C", U);
 
   // dc plaq[3][3];  // Plaquette matrix
   // Allocate the path arrays with 6 paths of length 2
@@ -30,12 +38,12 @@ int main() {
   // Set up the paths
   one_x_one_Paths(fPath, bPath);
 
-  int RTPathSize = calculatePathSize(20, 1);
+  int RTPathSize = calculatePathSize(30, 1);
   printf("%s %d \n", "The path length in 1x1 is ", RTPathSize);
   int* fPathRT = allocatePaths(3, RTPathSize);
   int* bPathRT = allocatePaths(3, RTPathSize);
   // Set up the paths
-  wRT(20, 1, fPathRT, bPathRT, RTPathSize);
+  wRT(30, 1, fPathRT, bPathRT, RTPathSize);
 
   int S_nP = 0;  // The number of spatial plaquettes
   int T_nP = 0;  // The number of temporal plaquettes
@@ -52,9 +60,16 @@ int main() {
   int t, i, j, k;
   int mu, nu;
 
+  initGPU();
+
+  #pragma omp declare target
+  extern double one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns);
+  extern double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,int pathLength, int* fPath, int* bPath);
+  #pragma omp end declare target
+
   // Loop over all sites
-#pragma omp parallel for shared(U, fPathRT, bPathRT) reduction(+:sumReTrWRT,T_sumReTrP,S_sumReTrP,T_nP,S_nP) private(pos,t,i,j,k,mu,nu) default(none), firstprivate(NT,NS,RTPathSize)
-    for (t = 0; t < NT; t++) {
+    #pragma omp target teams distribute parallel for shared(U, fPathRT, bPathRT) reduction(+:sumReTrWRT,T_sumReTrP,S_sumReTrP,T_nP,S_nP) private(pos,t,i,j,k,mu,nu) default(none), firstprivate(NT,NS,RTPathSize)
+    for (t=0; t < NT; t++) {
       for (i = 0; i < NS; i++) {
 	for (j = 0; j < NS; j++) {
 	  for (k = 0; k < NS; k++) {

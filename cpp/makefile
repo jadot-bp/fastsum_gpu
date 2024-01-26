@@ -1,5 +1,6 @@
 CC=nvc++
-CFLAGS= -Wall -Wextra -pedantic -g -lm -mp=gpu
+CFLAGS= -Wall -Wextra -pedantic -lm -mp=multicore
+
 SRCDIR=src
 BINDIR=bin
 SOURCES=$(wildcard $(SRCDIR)/*.cpp)
