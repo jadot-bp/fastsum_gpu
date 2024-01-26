@@ -1,10 +1,12 @@
-CC=clang++
-CFLAGS= -fsycl -fsycl-targets=nvptx64-nvidia-cuda
+CC=icpx
+CFLAGS= -g -O2 -fsycl -lm #-g -O3 -Wall -Wextra -pedantic -lm
 SRCDIR=src
 BINDIR=bin
-SOURCES=$(wildcard $(SRCDIR)/*.cpp)
-OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SOURCES))
-EXECUTABLE=$(BINDIR)/project
+#SOURCES=$(wildcard $(SRCDIR)/*.cpp)
+#OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SOURCES))
+SOURCES=
+OBJECTS=
+EXECUTABLE=$(BINDIR)/wrt
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(EXECUTABLE).cpp -o $(EXECUTABLE)_cpp.x $(OBJECTS)

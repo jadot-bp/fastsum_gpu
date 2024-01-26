@@ -7,6 +7,7 @@
 #include <cstring>  // for strerror
 #include <iostream>
 typedef std::complex<double> dc;
+#include <sycl/sycl.hpp>
 
 #define DIM 7  // Rank of the gauge field array Nt x Ns^3 x Nd x Nc^2
 #define NC 3   // NC = 3 only
@@ -16,7 +17,7 @@ void MultiplyMat(dc MM[NC][NC], dc left[NC][NC],
                  dc right[NC][NC]);  // 3x3 only
 
 void readGauge_C(int NS, int NT, const char* filename, dc* U);
-int idx(int pos[], int shape[], int Nd);
+extern SYCL_EXTERNAL int idx(int pos[], int shape[], int Nd);
 
-void construct_3x3(dc M[3][3], dc U[], int idx);
+extern SYCL_EXTERNAL void construct_3x3(dc M[3][3], dc U[], int idx);
 void ConjTranspose(dc M[NC][NC]);
