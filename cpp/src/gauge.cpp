@@ -22,7 +22,8 @@ int idx(int pos[], int shape[], int Nd);
 void construct_3x3(double complex M[3][3], double complex U[], int idx);
 */
 
-void MultiplyMat(dc MM[NC][NC], dc left[NC][NC], dc right[NC][NC]) {
+#pragma omp declare target
+void MultiplyMat(wc MM[NC][NC], wc left[NC][NC], wc right[NC][NC]) {
   // Multiply two matrices left and right, and return the product in MM.
   // Assumes matrices are 3x3 double complex.
   // Explicitly write out the maths for it
@@ -34,7 +35,7 @@ void MultiplyMat(dc MM[NC][NC], dc left[NC][NC], dc right[NC][NC]) {
   // right : output 3x3 double matrix
 
   // construct work matrix to prevent overloading if A or B equals M
-  dc work[NC][NC];
+  wc work[NC][NC];
 
   // !# first index
   work[0][0] = left[0][0] * right[0][0] + left[0][1] * right[1][0] +
@@ -75,6 +76,7 @@ void MultiplyMat(dc MM[NC][NC], dc left[NC][NC], dc right[NC][NC]) {
     }
   }
 }
+#pragma omp end declare target
 
 void readGauge_C(int NS, int NT, const char* filename, dc* U) {
   // Reads a gaugefield in 'C' format from dumping numpy array from lyncs in
@@ -97,6 +99,7 @@ void readGauge_C(int NS, int NT, const char* filename, dc* U) {
   fclose(fptr);
 }
 
+#pragma omp declare target
 int idx(int pos[], int shape[], int Nd) {
   // Calculate the row-major address in  memory at
   // position pos for given shape.
@@ -116,8 +119,10 @@ int idx(int pos[], int shape[], int Nd) {
   }
   return idx;
 }
+#pragma omp end declare target
 
-void construct_3x3(dc M[3][3], dc U[], int idx) {
+#pragma omp declare target
+void construct_3x3(wc M[3][3], wc U[], int idx) {
   // Constructs a 3x3 matrix M from address idx in memory U[]
   //
   // The SU(3) matrices are stored as a stream of 9 complex doubles
@@ -131,15 +136,17 @@ void construct_3x3(dc M[3][3], dc U[], int idx) {
     }
   }
 }
+#pragma omp end declare target
 
-void ConjTranspose(dc M[NC][NC]) {
+#pragma omp declare target
+void ConjTranspose(wc M[NC][NC]) {
   // Calculates the conjugate transpose of M.
 
   int N = 3;
 
   // Create working matrix to avoid overloading M
 
-  dc work[N][N];
+  wc work[N][N];
 
   // Calculate the conjugate transpose and store in work
   for (int i = 0; i < N; i++) {
@@ -155,6 +162,7 @@ void ConjTranspose(dc M[NC][NC]) {
     }
   }
 }
+#pragma omp end declare target
 
 /*
 int main() {
@@ -164,10 +172,10 @@ int main() {
   int NT = 8;
   // Lattice volume
   int nmemb = NT*NS*NS*NS*ND*NC*NC;
-  int size = sizeof(dc);
+  int size = sizeof(wc);
   // Allocate memory to store the lattice
-  dc *U = new dc[nmemb*size];//(double complex*) malloc(nmemb * size);
-  // dc *U = new dc
+  wc *U = new wc[nmemb*size];//(double complex*) malloc(nmemb * size);
+  // wc *U = new wc
   readGauge_C(NS, NT, "../conf/Gen2l_64x32n100.C", U);
   cout<<"done!"<<endl;
 }

@@ -1,5 +1,7 @@
-CC=g++
-CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm -fopenmp
+CC=icpx
+CFLAGS = -O3 -fiopenmp -fopenmp-targets=spir64 -fopenmp-offload-mandatory -g
+#CC=g++
+#CFLAGS= -O3 -Wall -Wextra -pedantic -g -lm -fopenmp
 #CC=nvc++
 #CFLAGS= -O3 -g -lm -mp=gpu
 SRCDIR=src
@@ -9,7 +11,7 @@ OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SOURCES))
 EXECUTABLE1=$(BINDIR)/project
 EXECUTABLE2=$(BINDIR)/wrt
 
-all: $(EXECUTABLE1) $(EXECUTABLE2)
+all: $(EXECUTABLE2) #$(EXECUTABLE1)
 
 $(EXECUTABLE1): $(OBJECTS)
 	$(CC) $(CFLAGS) $(EXECUTABLE1).cpp -o $(EXECUTABLE1)_cpp.x $(OBJECTS)

@@ -259,19 +259,20 @@ void wRT(double maxR, double maxT, int* fPaths, int* bPaths, int pathSize) {
   //  exit(1);
 }
 
-double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
-                           int pathLength, int* fPath, int* bPath) {
+#pragma omp declare target
+float tracePathWilsonLoop(wc U[], int pos[], int Nt, int Ns, int NPath,
+                          int pathLength, int* fPath, int* bPath) {
   // Follows the wilson loop path from a fPath and bPath
   // Starting at pos
   // Returns the sum of the trace of the 3x3 link SU(3) matrices
   // Output
-  double trace = 0;
+  float trace = 0;
   // Working matrices for calculations
-  dc U_fLeft[3][3];
-  dc U_fRight[3][3];
-  dc U_bLeft[3][3];
-  dc U_bRight[3][3];
-  dc plaq[3][3];
+  wc U_fLeft[3][3];
+  wc U_fRight[3][3];
+  wc U_bLeft[3][3];
+  wc U_bRight[3][3];
+  wc plaq[3][3];
   int fPos[4];
   int bPos[4];
   // Shape of the lattice
@@ -288,7 +289,8 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
     // Get starting position
     // Start SU(3) indices at zero
     // printf("FOR x, y, z, t, mu, %d %d %d %d %d\n", fPos[0], fPos[1], fPos[2],
-    // fPos[3], fPath[pp + 0]); printf("BAC x, y, z, t, mu, %d %d %d %d %d\n",
+    // fPos[3], fPath[pp + 0]);
+    // printf("BAC x, y, z, t, mu, %d %d %d %d %d\n",
     // bPos[0], bPos[1], bPos[2], bPos[3], bPath[pp + 0]);
     int U_f_pos[DIM] = {fPos[0],       fPos[1], fPos[2], fPos[3],
                         fPath[pp + 0], 0,       0};
@@ -300,6 +302,8 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
     // Populate U_[f,b]Left with value
     construct_3x3(U_fLeft, U, U_f_idx);
     construct_3x3(U_bLeft, U, U_b_idx);
+    // printf("3x3 %f\n", real(U_fLeft[1][1]));
+    // printf("idx %d\n", U_f_idx);
     // printf("\n blah %d \n\n", fPath[pp + 0]);
     // Update position
     fPos[fPath[pp + 0]] = pos[fPath[pp + 0]] + 1;
@@ -315,7 +319,6 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
     } else {
       bPos[bPath[pp + 0]] %= Ns;
     }
-
     // Loop over each step in the path
     // Start at 1 as have already got the first link
     for (int jj = 1; jj < pathLength; jj++) {
@@ -323,8 +326,9 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
       // Get the next link
       // Start SU(3) indices at zero
       // printf("FOR x, y, z, t, mu, %d %d %d %d %d\n", fPos[0], fPos[1],
-      // fPos[2], fPos[3], fPath[pp + jj]); printf("BAC x, y, z, t, mu, %d %d %d
-      // %d %d\n", bPos[0], bPos[1], bPos[2], bPos[3], bPath[pp + jj]);
+      //     fPos[2], fPos[3], fPath[pp + jj]);
+      // printf("BAC x, y, z, t, mu, %d %d %d %d %d\n", bPos[0], bPos[1],
+      // bPos[2], bPos[3], bPath[pp + jj]);
       int U_f_pos[DIM] = {fPos[0],        fPos[1], fPos[2], fPos[3],
                           fPath[pp + jj], 0,       0};
       int U_b_pos[DIM] = {bPos[0],        bPos[1], bPos[2], bPos[3],
@@ -358,14 +362,19 @@ double tracePathWilsonLoop(dc U[], int pos[], int Nt, int Ns, int NPath,
     // So now multiply forward * conj(back)
     ConjTranspose(U_bLeft);
     MultiplyMat(plaq, U_fLeft, U_bLeft);
+    // printf("3x3 %f %f %f\n", real(plaq[1][1]), real(U_fLeft[1][1]),
+    // real(U_bLeft[1][1]));
     for (int i = 0; i < NC; i++) {
       trace += real(plaq[i][i]);
+      // printf("trace %f\n", trace);
     }
   }
   // return summed trace
+  // printf("trace %f\n", trace);
   return trace;
 }
-
+#pragma omp end declare target
+/*
 double one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns) {
   // Calculate the value of the plaquette
   // in the mu-nu plane at position pos.
@@ -452,3 +461,4 @@ double one_x_one(dc U[], int pos[], int mu, int nu, int Nt, int Ns) {
   }
   return trace;
 }
+*/
